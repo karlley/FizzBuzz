@@ -18,7 +18,7 @@
 git 設定, サーバ起動確認
 
 ```
-$ rails new FizzBuzz
+$ rails new fizzbuzz
 $ git add .
 $ git commit -m "first commit"
 $ git remote add origin https://github.com/karlley/FizzBuzz.git
@@ -33,8 +33,8 @@ http://127.0.0.1:3000 で表示確認
 - model: value 
 - controller: values
 - view: new, show, index
-- db name: values
-- db data: input, output
+- db_name: values
+- column_name: input, output
 
 ## controller
 
@@ -45,6 +45,140 @@ http://127.0.0.1:3000 で表示確認
 $ rails g controller values new show index
 ```
 
-http://127.0.0.1:3000/values/new
-http://127.0.0.1:3000/values/show
-http://127.0.0.1:3000/values/index
+- http://127.0.0.1:3000/values/new
+- http://127.0.0.1:3000/values/show
+- http://127.0.0.1:3000/values/index
+
+## model, DB
+
+```
+$ rails db:create
+$ rails g model value input:integer output:string
+$ rails db:migrate
+```
+
+コンソールで確認
+
+```
+$ rails c --sandbox
+>> value = Value.new(input: 3, output: "Fizz")
+>> value.valid?
+>> value.save
+>> value
+>> Value.all
+>> Value.count
+```
+
+## routes
+
+view でpath を記述するので先にroute を作成する
+
+```
+Rails.application.routes.draw do
+  get '/values/new', to: 'values#new'
+  get '/values/show', to: 'values#show'
+  get '/values/index', to: 'values#index'
+  post '/values', to: 'values#create'
+end
+```
+
+- http://127.0.0.1:3000/values/new
+- http://127.0.0.1:3000/values/show
+- http://127.0.0.1:3000/values/index
+
+view で使用するroute の確認
+
+```
+$ rails routes
+Prefix         Verb    URI Pattern                Controller#Action
+values_new     GET     /values/new(.:format)      values#new
+values_show    GET     /values/show(.:format)     values#show
+values_index   GET     /values/index(.:format)    values#index
+values         POST    /values(.:format)          values#create
+```
+
+## new, create
+
+### new, create view
+
+```
+<h1>Values#new</h1>
+<p>Find me in app/views/values/new.html.erb</p>
+
+<%= form_with model: @value do |f| %>
+  <%= f.label :input, "Enter a Number!", value: "Enter a Number!" %>
+  <%= f.text_field :input %>
+  <%= f.submit "FizzBuzz!" %>
+<% end %>
+```
+
+application.html.erb デバック情報表示
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FizzBuzz</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+    <%= yield %>
+    <p>=========================================</p>
+    <p> debug data</p>
+    <%= debug(params) if Rails.env.development? %>
+    <p>=========================================</p>
+  </body>
+</html>
+```
+
+### new, create controller
+
+- create にpost > DB 保存 & index.html.erb にリダイレクト
+- リダイレクト先は最終的にshow に変更する
+- create アクションのvalid? == false は機能していない
+
+```
+class ValuesController < ApplicationController
+  def new
+    @value = Value.new
+  end
+
+  def show
+  end
+
+  def index
+  end
+
+  def create
+     @value = Value.new(value_params)
+     if @value.valid?
+       @value.save
+       redirect_to action: "index"
+     else
+       # 機能していない
+       render action: "new"
+     end
+  end
+
+  private
+
+    def value_params
+      params.require(:value).permit(:input, :output)
+    end
+end
+```
+
+## show
+
+### show view
+### show controller
+
+## index
+
+### index view
+### index controller
