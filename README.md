@@ -269,4 +269,61 @@ end
 ## index
 
 ### view for index
+
+index.html.erb
+
+```
+<h1>Values#index</h1>
+<p>Find me in app/views/values/index.html.erb</p>
+
+<h2><%= @values_count %> times FizzBuzz !!</h2>
+
+<% @values.each do |value| %>
+  <div>
+    <p>---------------------------</p>
+    <p>id: <%= value.id %></p>
+    <p>input: <%= value.input %></p>
+    <p>output: <%= value.output %></p>
+  </div>
+<% end %>
+
+```
+
 ### controller for index
+
+values_controller.rb
+
+```
+class ValuesController < ApplicationController
+  def new
+    @value = Value.new
+  end
+
+  def show
+    @value = Value.find(params[:id])
+  end
+
+  def index
+    @values = Value.all
+    @values_count = Value.count
+  end
+
+  def create
+     @value = Value.new(value_params)
+     if @value.valid?
+       @value.save
+       # redirect_to action: "show"
+       redirect_to @value
+     else
+       # 機能していない
+       render action: "new"
+     end
+  end
+
+  private
+
+    def value_params
+      params.require(:value).permit(:input, :output)
+    end
+end
+```

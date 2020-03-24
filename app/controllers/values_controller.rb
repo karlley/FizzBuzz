@@ -8,6 +8,8 @@ class ValuesController < ApplicationController
   end
 
   def index
+    @values = Value.all
+    @values_count = Value.count
   end
 
   def create
