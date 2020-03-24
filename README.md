@@ -73,6 +73,8 @@ $ rails c --sandbox
 
 view でpath を記述するので先にroute を作成する
 
+config/routes.rb
+
 ```
 Rails.application.routes.draw do
   get '/values/new', to: 'values#new'
@@ -99,7 +101,9 @@ values         POST    /values(.:format)          values#create
 
 ## new, create
 
-### new, create view
+### view for new, create
+
+new.html.erb
 
 ```
 <h1>Values#new</h1>
@@ -112,7 +116,9 @@ values         POST    /values(.:format)          values#create
 <% end %>
 ```
 
-application.html.erb デバック情報表示
+### view for debug data
+
+application.html.erb
 
 ```
 <!DOCTYPE html>
@@ -136,11 +142,13 @@ application.html.erb デバック情報表示
 </html>
 ```
 
-### new, create controller
+### controller for new, create
 
 - create にpost > DB 保存 & index.html.erb にリダイレクト
 - リダイレクト先は最終的にshow に変更する
 - create アクションのvalid? == false は機能していない
+
+app/controller/values_controllers/values_controller.rb
 
 ```
 class ValuesController < ApplicationController
@@ -175,10 +183,90 @@ end
 
 ## show
 
-### show view
-### show controller
+### route for show
+
+```
+Rails.application.routes.draw do
+  get '/values/new', to: 'values#new'
+  get '/values/show', to: 'values#show'
+  get '/values/index', to: 'values#index'
+  post '/values', to: 'values#create'
+  # /values/id_number でアクセス可能になる
+  resources :values
+end
+```
+
+追加されたroutes を確認
+
+```
+$ rails routes
+Prefix         Verb    URI Pattern                 Controller#Action
+values_new     GET     /values/new(.:format)       values#new
+values_show    GET     /values/show(.:format)      values#show
+values_index   GET     /values/index(.:format)     values#index
+values         POST    /values(.:format)           values#create
+# resources で追加されたroutes
+               GET     /values(.:format)           values#index
+               POST    /values(.:format)           values#create
+new_value      GET     /values/new(.:format)       values#new
+edit_value     GET     /values/:id/edit(.:format)  values#edit
+value          GET     /values/:id(.:format)       values#show
+               PATCH   /values/:id(.:format)       values#update
+               PUT     /values/:id(.:format)       values#update
+               DELETE  /values/:id(.:format)       values#destroy
+```
+
+### view for show
+
+show.html.erb
+
+```
+<h1>Values#show</h1>
+<p>Find me in app/views/values/show.html.erb</p>
+
+  <p>id: <%= @value.id %></p>
+  <p>input: <%= @value.input %></p>
+  <p>output: <%= @value.output %></p>
+```
+
+### controller for show
+
+```
+class ValuesController < ApplicationController
+  def new
+    @value = Value.new
+  end
+
+  def show
+    @value = Value.find(params[:id])
+  end
+
+  def index
+  end
+
+  def create
+     @value = Value.new(value_params)
+     if @value.valid?
+       @value.save
+       # redirect_to action: "show"
+       # /values/id で表示させるためのインスタンス変数
+       redirect_to @value
+     else
+       # 機能していない
+       render action: "new"
+     end
+  end
+
+  private
+
+    def value_params
+      params.require(:value).permit(:input, :output)
+    end
+end
+
+```
 
 ## index
 
-### index view
-### index controller
+### view for index
+### controller for index

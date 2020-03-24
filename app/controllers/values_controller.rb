@@ -4,6 +4,7 @@ class ValuesController < ApplicationController
   end
 
   def show
+    @value = Value.find(params[:id])
   end
 
   def index
@@ -13,7 +14,8 @@ class ValuesController < ApplicationController
      @value = Value.new(value_params)
      if @value.valid?
        @value.save
-       redirect_to action: "index"
+       # redirect_to action: "show"
+       redirect_to @value
      else
        # 機能していない
        render action: "new"
