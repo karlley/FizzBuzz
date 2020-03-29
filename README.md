@@ -437,3 +437,45 @@ class ValuesController < ApplicationController
     end
 end
 ```
+
+## inprovement
+
+不具合や修正点を改善
+
+- 各ページのリンク
+- 数値以外が入力された場合のレンダリング
+- fat controller
+
+### add page link
+
+1. `$ rails routes` でルートを確認
+2. Prefix + _path で名前付きルートを追加
+
+application.html.erb
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FizzBuzz</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+
+    <p><%= link_to "Home", values_new_path %> | <%= link_to "Log", values_index_path %></p>
+
+    <%= yield %>
+
+    <p>=========================================</p>
+    <p> debug data</p>
+    <%= debug(params) if Rails.env.development? %>
+    <p>=========================================</p>
+  </body>
+</html>
+
+```

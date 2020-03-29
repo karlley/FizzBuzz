@@ -1,7 +1,10 @@
 <h1>Values#new</h1>
-<p>Find me in app/views/values/new.html.erb</p>
+
+<p>This is FizzBuzz App!<br>
+Please Enter a Number!</p>
+
 <%= form_with model: @value do |f| %>
-  <%= f.label :input, "Enter a Number!", value: "Enter a Number!" %>
+  <%# <%= f.label :input, "Enter a Number!", value: "Enter a Number!" %1> %>
   <%= f.text_field :input %>
   <%= f.submit "FizzBuzz!" %>
 <% end %>
