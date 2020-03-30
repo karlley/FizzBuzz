@@ -1,10 +1,11 @@
 <h1>Values#new</h1>
 
-<p>This is FizzBuzz App!<br>
-Please Enter a Number!</p>
+<p>This is FizzBuzz App!</p>
+<p>Please Enter Number!</p>
+<p>Up to 5 Characters!</p>
 
 <%= form_with model: @value do |f| %>
   <%# <%= f.label :input, "Enter a Number!", value: "Enter a Number!" %1> %>
-  <%= f.text_field :input %>
+  <%= f.number_field :input %>
   <%= f.submit "FizzBuzz!" %>
 <% end %>

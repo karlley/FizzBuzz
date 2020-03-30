@@ -13,6 +13,10 @@
 
     <p><%= link_to "Home", values_new_path %> | <%= link_to "Log", values_index_path %></p>
 
+    <% flash.each do |message_type, message| %>
+      <div><%= message_type %><%= message %></div>
+    <% end %>
+
     <%= yield %>
 
     <p>=========================================</p>

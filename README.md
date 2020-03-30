@@ -443,10 +443,11 @@ end
 不具合や修正点を改善
 
 - 各ページのリンク
-- 数値以外が入力された場合のレンダリング
+- 数値のみを入力
+- flash
 - fat controller
 
-### add page link
+### 各ページのリンク
 
 1. `$ rails routes` でルートを確認
 2. Prefix + _path で名前付きルートを追加
@@ -479,3 +480,66 @@ application.html.erb
 </html>
 
 ```
+
+### 数値のみを入力
+
+- form タグでテキストフィールドから数値フィールドに変更
+- コントローラで:input を.to_i が不必要になった
+
+new.html.erb
+
+```
+<h1>Values#new</h1>
+
+<p>This is FizzBuzz App!</p>
+<p>Please Enter Number!</p>
+<p>Up to 5 Characters!</p>
+
+<%= form_with model: @value do |f| %>
+  <%# <%= f.label :input, "Enter a Number!", value: "Enter a Number!" %1> %>
+  # text_field > number_field に変更
+  <%= f.number_field :input %>
+  <%= f.submit "FizzBuzz!" %>
+<% end %>
+```
+
+values_controller.rb
+
+```
+.
+  def create
+    # .to_i を削除した
+    @input = params.require(:value)[:input]
+
+    if @input % 15 == 0
+      @output = "FizzBuzz!"
+    elsif @input % 3 == 0
+      @output = "Fizz!"
+    elsif @input % 5 == 0
+      @output = "Buzz!"
+    else
+      @output = "Not FizzBuzz..."
+    end
+
+    params.require(:value)[:output] = @output
+
+    @value = Value.new(value_params)
+    if @value.valid?
+      @value.save
+      redirect_to @value
+    else
+      flash.now[:danger] = "Up to 5 Characters!"
+      render action: "new"
+    end
+  end
+.
+```
+
+### flash
+
+- input: 5文字以内の数値 > "Successful! Save to Log!"
+- output: 5文字以内の数値 > "Failed! Up to 5 Characters!"
+
+- 保存失敗時のレンダリングできてない
+
+### fat controller
