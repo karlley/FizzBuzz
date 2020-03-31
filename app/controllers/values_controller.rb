@@ -13,7 +13,7 @@ class ValuesController < ApplicationController
   end
 
   def create
-    @input = params.require(:value)[:input]
+    @input = params.require(:value)[:input].to_i
 
     if @input % 15 == 0
       @output = "FizzBuzz!"
@@ -29,11 +29,12 @@ class ValuesController < ApplicationController
 
     @value = Value.new(value_params)
     if @value.save
-      flash[:success] = "Successful! Save to Log!"
+      flash[:success] = "Successed to Save!"
       redirect_to @value
     else
-      flash.now[:danger] = "Save Failed! Up to 5 Characters!"
-      render.now 'values/new'
+      flash[:danger] = "Failed to Save! Again!"
+      redirect_to values_new_path
+      # render 'new'
     end
   end
 

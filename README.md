@@ -537,9 +537,83 @@ values_controller.rb
 
 ### flash
 
-- input: 5文字以内の数値 > "Successful! Save to Log!"
-- output: 5文字以内の数値 > "Failed! Up to 5 Characters!"
+- input: 5文字以内の数値 > "Successed to Save!"
+- output: 5文字以内の数値 > "Failed to Save! Again!"
 
-- 保存失敗時のレンダリングできてない
+values_contoroller.rb
+
+```
+  def create
+    @input = params.require(:value)[:input].to_i
+
+    if @input % 15 == 0
+      @output = "FizzBuzz!"
+    elsif @input % 3 == 0
+      @output = "Fizz!"
+    elsif @input % 5 == 0
+      @output = "Buzz!"
+    else
+      @output = "Not FizzBuzz..."
+    end
+
+    params.require(:value)[:output] = @output
+
+    @value = Value.new(value_params)
+    if @value.save
+      flash[:success] = "Successed to Save!"
+      redirect_to @value
+    else
+      flash[:danger] = "Failed to Save! Again!"
+      redirect_to values_new_path
+      # render 'new'
+    end
+  end
+```
+
+application.html.erb
+
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>FizzBuzz</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+
+    <p><%= link_to "Home", values_new_path %> | <%= link_to "Log", values_index_path %></p>
+
+    <% flash.each do |message_type, message| %>
+      <div class="aleart-<%= message_type %>"><%= message %></div>
+    <% end %>
+
+    <%= yield %>
+
+    <p>=========================================</p>
+    <p> debug data</p>
+    <%= debug(params) if Rails.env.development? %>
+    <p>=========================================</p>
+  </body>
+</html>
+```
+
+values.scss
+
+```
+.aleart-success {
+  color: green;
+  background: limegreen;
+}
+
+.aleart-danger {
+  color: red;
+  background: tomato;
+}
+```
 
 ### fat controller
