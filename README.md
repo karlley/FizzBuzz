@@ -617,3 +617,5 @@ values.scss
 ```
 
 ### fat controller
+
+未実装
