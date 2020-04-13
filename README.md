@@ -2,18 +2,24 @@
 
 フォームから値を送信 > FizzBuzz 結果を表示
 
-## purpose
+## Description
+
+- Rails
+- pry
+- form
+
+## Purpose
 
 - form_with の使い方の理解
 - 独自のアクションを追加できるようになる
 
-## environment
+## Environment
 
 - mac OS catarina 10.16.3
 - ruby 2.6.5
 - ruby on rails 6.0.2.1
 
-## setup
+## Setup
 
 git 設定, サーバ起動確認
 
