@@ -4,7 +4,11 @@
 
 ## Description
 
+<<<<<<< HEAD
 - Rails
+=======
+- Ruby
+>>>>>>> 6f6f09405c7088e3ffd0fa9274b91194742b71a6
 - pry
 - form
 
